@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Landslide Detection System',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.deepPurple,
       ),
       home: AuthScreen(),
     );
@@ -140,9 +141,11 @@ class DetailsPage extends StatelessWidget {
         _phoneController.text.isNotEmpty &&
         _locationController.text.isNotEmpty &&
         _phoneController.text.length == 10) {
-          ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Details submitted successfully!')),
-                );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Details submitted successfully!')),
+      );
+
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => HomePage()),
@@ -189,8 +192,6 @@ class DetailsPage extends StatelessWidget {
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-
-                // Navigate to the HomePage
                 _navigateToHomePage(context);
               },
               child: Text('Submit'),
@@ -218,21 +219,58 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _startFadeOut() async {
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(Duration(seconds: 2));
     setState(() {
       _opacity = 0.0;
     });
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 1));
     setState(() {
       _showContent = true;
     });
   }
 
-  @override
+   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Home'),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text(
+                'Menu',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text('Home'),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+              },
+            ),
+            ListTile(
+              title: Text('View Map'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MapPage(),
+                  ),
+                );
+              },
+            ),
+            // Add more menu items here
+          ],
+        ),
       ),
       body: Center(
         child: _showContent
@@ -244,7 +282,6 @@ class _HomePageState extends State<HomePage> {
                     style: TextStyle(fontSize: 20),
                   ),
                   SizedBox(height: 16),
-                  // Add your main content here
                   Text('Main content goes here.'),
                 ],
               )
@@ -256,6 +293,58 @@ class _HomePageState extends State<HomePage> {
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               ),
+      ),
+    );
+  }
+}
+
+class MapPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Map'),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text(
+                'Menu',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text('Home'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('View Map'),
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+              },
+            ),
+            // Add more menu items here if needed
+          ],
+        ),
+      ),
+      body: WebView(
+        initialUrl: 'https://mygeodata.cloud/map/#32332797-PTN_LS,32332793-TVPM_LS,32332798-TSR_LS,32332792-PLKD_LS,32332791-WAYD_LS,32332799-KKD_LS,32332796-KNR_LS,32332801-MLPM_LS,32332790-KTM_LS,32332802-KLM_LS,32332800-IDUKI_LS,32332795-KAZKD_LS,32332794-EKM_LS',
+        javascriptMode: JavascriptMode.unrestricted,
       ),
     );
   }
