@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(MyApp());
@@ -24,6 +25,9 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   bool _isLoginMode = true;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
   void _toggleMode() {
     setState(() {
@@ -32,10 +36,18 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   void _navigateToDetailsPage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => DetailsPage()),
-    );
+    if (_emailController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty &&
+        (_isLoginMode || _confirmPasswordController.text.isNotEmpty)) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => DetailsPage()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please fill in all fields')),
+      );
+    }
   }
 
   @override
@@ -80,10 +92,12 @@ class _AuthScreenState extends State<AuthScreen> {
     return Column(
       children: [
         TextField(
+          controller: _emailController,
           decoration: InputDecoration(labelText: 'Email'),
           keyboardType: TextInputType.emailAddress,
         ),
         TextField(
+          controller: _passwordController,
           decoration: InputDecoration(labelText: 'Password'),
           obscureText: true,
         ),
@@ -95,14 +109,17 @@ class _AuthScreenState extends State<AuthScreen> {
     return Column(
       children: [
         TextField(
+          controller: _emailController,
           decoration: InputDecoration(labelText: 'Email'),
           keyboardType: TextInputType.emailAddress,
         ),
         TextField(
+          controller: _passwordController,
           decoration: InputDecoration(labelText: 'Password'),
           obscureText: true,
         ),
         TextField(
+          controller: _confirmPasswordController,
           decoration: InputDecoration(labelText: 'Confirm Password'),
           obscureText: true,
         ),
@@ -112,6 +129,31 @@ class _AuthScreenState extends State<AuthScreen> {
 }
 
 class DetailsPage extends StatelessWidget {
+  final _nameController = TextEditingController();
+  final _addressController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _locationController = TextEditingController();
+
+  void _navigateToHomePage(BuildContext context) {
+    if (_nameController.text.isNotEmpty &&
+        _addressController.text.isNotEmpty &&
+        _phoneController.text.isNotEmpty &&
+        _locationController.text.isNotEmpty &&
+        _phoneController.text.length == 10) {
+          ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Details submitted successfully!')),
+                );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please fill in all fields with valid data')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,30 +166,96 @@ class DetailsPage extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
+              controller: _nameController,
               decoration: InputDecoration(labelText: 'Full Name'),
             ),
             TextField(
+              controller: _addressController,
               decoration: InputDecoration(labelText: 'Address'),
             ),
             TextField(
+              controller: _phoneController,
               decoration: InputDecoration(labelText: 'Phone Number'),
               keyboardType: TextInputType.phone,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(10),
+              ],
             ),
             TextField(
+              controller: _locationController,
               decoration: InputDecoration(labelText: 'Location'),
             ),
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                // Handle the details submission
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Details submitted successfully!')),
-                );
+
+                // Navigate to the HomePage
+                _navigateToHomePage(context);
               },
               child: Text('Submit'),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  double _opacity = 1.0;
+  bool _showContent = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _startFadeOut();
+  }
+
+  void _startFadeOut() async {
+    await Future.delayed(Duration(seconds: 3));
+    setState(() {
+      _opacity = 0.0;
+    });
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {
+      _showContent = true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Home'),
+      ),
+      body: Center(
+        child: _showContent
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Hello !!',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  SizedBox(height: 16),
+                  // Add your main content here
+                  Text('Main content goes here.'),
+                ],
+              )
+            : AnimatedOpacity(
+                opacity: _opacity,
+                duration: Duration(seconds: 2),
+                child: Text(
+                  'Welcome to the Landslide Detection System',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ),
       ),
     );
   }
