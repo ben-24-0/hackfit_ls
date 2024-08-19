@@ -141,7 +141,6 @@ class DetailsPage extends StatelessWidget {
         _phoneController.text.isNotEmpty &&
         _locationController.text.isNotEmpty &&
         _phoneController.text.length == 10) {
-
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Details submitted successfully!')),
       );
@@ -230,7 +229,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -345,10 +344,7 @@ class MapPage extends StatelessWidget {
       ),
       body: WebView(
         initialUrl:
-            Uri.dataFromString(
-              '<html><body><iframe src="https://www.google.com/maps/d/u/0/embed?mid=1Q1a8akda8eH_D_HXuV970-U-_LjQVVw&ehbc=2E312F&noprof=1" width="1080" height="2000"></iframe></body></html>',
-              mimeType: 'text/html',
-            ).toString(),
+            'https://www.google.com/maps/d/u/0/embed?mid=1Q1a8akda8eH_D_HXuV970-U-_LjQVVw&ehbc=2E312F',
         javascriptMode: JavascriptMode.unrestricted,
       ),
     );
