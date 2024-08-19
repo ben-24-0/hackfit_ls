@@ -346,7 +346,7 @@ class MapPage extends StatelessWidget {
       body: WebView(
         initialUrl:
             Uri.dataFromString(
-              '<html><body><iframe src="https://www.google.com/maps/d/u/0/embed?mid=1Q1a8akda8eH_D_HXuV970-U-_LjQVVw&ehbc=2E312F&noprof=1" width="640" height="480"></iframe></body></html>',
+              '<html><body><iframe src="https://www.google.com/maps/d/u/0/embed?mid=1Q1a8akda8eH_D_HXuV970-U-_LjQVVw&ehbc=2E312F&noprof=1" width="1080" height="2000"></iframe></body></html>',
               mimeType: 'text/html',
             ).toString(),
         javascriptMode: JavascriptMode.unrestricted,
