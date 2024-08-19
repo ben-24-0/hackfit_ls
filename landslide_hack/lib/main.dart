@@ -344,7 +344,7 @@ class MapPage extends StatelessWidget {
         ),
       ),
       body: WebView(
-        initialUrl: 'https://mygeodata.cloud/map/#32332797-PTN_LS,32332793-TVPM_LS,32332798-TSR_LS,32332792-PLKD_LS,32332791-WAYD_LS,32332799-KKD_LS,32332796-KNR_LS,32332801-MLPM_LS,32332790-KTM_LS,32332802-KLM_LS,32332800-IDUKI_LS,32332795-KAZKD_LS,32332794-EKM_LS',
+        initialUrl: 'https://www.google.com/maps/d/u/0/embed?mid=1Q1a8akda8eH_D_HXuV970-U-_LjQVVw&ehbc=2E312F',
         javascriptMode: JavascriptMode.unrestricted,
       ),
     );
