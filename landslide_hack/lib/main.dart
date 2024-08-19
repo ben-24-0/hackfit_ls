@@ -344,7 +344,7 @@ class MapPage extends StatelessWidget {
         ),
       ),
       body: WebView(
-        initialUrl: 'https://www.google.com/maps/d/u/0/embed?mid=1Q1a8akda8eH_D_HXuV970-U-_LjQVVw&ehbc=2E312F',
+        initialUrl: 'https://www.google.com/maps/d/u/0/embed?mid=1Q1a8akda8eH_D_HXuV970-U-_LjQVVw&ehbc=2E312F&noprof=1',
         javascriptMode: JavascriptMode.unrestricted,
       ),
     );
