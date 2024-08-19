@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:vibration/vibration.dart';
 
 void main() {
   runApp(MyApp());
@@ -229,6 +230,24 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void _triggerAlert() async {
+    // Check if vibration is available and perform vibration
+    bool hasVibrator = true;
+    if (hasVibrator) {
+      Vibration.vibrate(duration: 10000); // Vibrate for 1 second
+    }
+
+    // Delay navigation to ensure vibration is completed
+    await Future.delayed(
+        Duration(milliseconds: 1000)); // Adjust delay if needed
+
+    // Navigate to the AlertPage
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AlertPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -267,6 +286,10 @@ class _HomePageState extends State<HomePage> {
                   ),
                 );
               },
+            ),
+            ListTile(
+              title: Text('Trigger Alert'),
+              onTap: _triggerAlert,
             ),
             // Add more menu items here
           ],
@@ -346,6 +369,31 @@ class MapPage extends StatelessWidget {
         initialUrl:
             'https://www.google.com/maps/d/u/0/embed?mid=1Q1a8akda8eH_D_HXuV970-U-_LjQVVw&ehbc=2E312F',
         javascriptMode: JavascriptMode.unrestricted,
+      ),
+    );
+  }
+}
+
+class AlertPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Alert'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/hazard.png', height: 150), // Hazard image
+            SizedBox(height: 20),
+            Text(
+              'Danger! Landslide Warning.',
+              style: TextStyle(
+                  fontSize: 24, fontWeight: FontWeight.bold, color: Colors.red),
+            ),
+          ],
+        ),
       ),
     );
   }
