@@ -225,7 +225,7 @@ class _HomePageState extends State<HomePage> {
   void _startFadeOut() async {
     await Future.delayed(Duration(seconds: 2));
     setState(() {
-      _opacity = 0.0;
+      opacity = 0.0;
     });
     await Future.delayed(Duration(seconds: 1));
     setState(() {
@@ -235,7 +235,8 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _fetchDistricts() async {
     try {
-      final response = await http.get(Uri.parse('https://your-backend-api/districts'));
+      final response =
+          await http.get(Uri.parse('https://your-backend-api/districts'));
       if (response.statusCode == 200) {
         setState(() {
           _districts = List<String>.from(json.decode(response.body));
@@ -306,6 +307,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
 class MapPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
