@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() {
   runApp(MyApp());
@@ -209,13 +211,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  double _opacity = 1.0;
+  double opacity = 1.0;
   bool _showContent = false;
+  List<String> _districts = [];
 
   @override
   void initState() {
     super.initState();
     _startFadeOut();
+    _fetchDistricts();
   }
 
   void _startFadeOut() async {
@@ -227,6 +231,24 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _showContent = true;
     });
+  }
+
+  Future<void> _fetchDistricts() async {
+    try {
+      final response = await http.get(Uri.parse('https://your-backend-api/districts'));
+      if (response.statusCode == 200) {
+        setState(() {
+          _districts = List<String>.from(json.decode(response.body));
+        });
+      } else {
+        throw Exception('Failed to load districts');
+      }
+    } catch (e) {
+      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching districts')),
+      );
+    }
   }
 
   @override
@@ -268,21 +290,22 @@ class _HomePageState extends State<HomePage> {
                 );
               },
             ),
-            // Add more menu items here
           ],
         ),
       ),
-      body: WebView(
-        initialUrl: Uri.dataFromString(
-          '<html><body><iframe src="https://www.google.com/maps/d/u/0/embed?mid=1Q1a8akda8eH_D_HXuV970-U-_LjQVVw&ehbc=2E312F&noprof=1" width="1080" height="2000"></iframe></body></html>',
-          mimeType: 'text/html',
-        ).toString(),
-        javascriptMode: JavascriptMode.unrestricted,
-      ),
+      body: _showContent
+          ? ListView.builder(
+              itemCount: _districts.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(_districts[index]),
+                );
+              },
+            )
+          : Center(child: CircularProgressIndicator()),
     );
   }
 }
-
 class MapPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -323,7 +346,6 @@ class MapPage extends StatelessWidget {
                 Navigator.pop(context); // Close the drawer
               },
             ),
-            // Add more menu items here if needed
           ],
         ),
       ),
